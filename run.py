@@ -24,8 +24,10 @@ def _or(x):
 nodes = [_and, _or]
 
 
-model = Model(nodes)
+model = Model(nodes, depth=3)
 
 model.fit(X, Y)
 
 assert model.evaluate(X, Y) == 1.0
+
+print(model.get_program())

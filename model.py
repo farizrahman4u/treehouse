@@ -108,4 +108,56 @@ class Model(object):
 		Y_ = np.array(self.predict(X), dtype=int)
 		return float(np.sum(Y==Y_)) / len(Y)
 
+	def _get_node_name(self, node):
+		if hasattr	(node, '__name__'):
+			return node.__name__
+		if hasattr(node, '__class__'):
+			node = node.__class__.__name__
+		return str(node)
+
+	def get_program(self):
+		lines = ['\n']
+		nodes = self.nodes
+		lps = self.lps
+		nps = self.nps
+		num_nodes = len(nps)
+		previous_node = None
+		def _get_code(n_p, ind, values={}):
+			if n_p >= num_nodes:
+				n_p -= num_nodes
+				label = np.argmax(lps[n_p])
+				line = ' ' * ind + 'print(' + str(label) + ')'
+				lines.append(line)
+			else:
+					node = nodes[np.argmax(nps[n_p])]
+					node_name = self._get_node_name(node)
+					node_val = values.get(node, None)
+					if node_val is None:
+						line = ' ' * ind + 'if ' + node_name + '(input)' + ':'
+						lines.append(line)
+						ind += 4
+						values[node] = True
+						left = 2 * n_p + 1
+						right = left + 1
+						_get_code(right, ind, values)
+						values[node] = False
+						ind -= 4
+						lines.append(' ' * ind + 'else:')
+						ind += 4
+						_get_code(left, ind, values)
+						values[node] = None
+						ind -= 4
+					elif node_val:
+						right = 2 * n_p + 2
+						_get_code(right, ind, values)
+					else:
+						left = 2 * n_p + 1
+						_get_code(left, ind, values)
+
+
+		_get_code(0, 0)
+		return '\n'.join(lines)
+
+
+
 
