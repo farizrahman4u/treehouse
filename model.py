@@ -122,7 +122,7 @@ class Model(object):
 		nps = self.nps
 		num_nodes = len(nps)
 		previous_node = None
-		def _get_code(n_p, ind, values={}):
+		def _get_code(n_p=0, ind=0, values={}):
 			if n_p >= num_nodes:
 				n_p -= num_nodes
 				label = np.argmax(lps[n_p])
@@ -155,7 +155,7 @@ class Model(object):
 						_get_code(left, ind, values)
 
 
-		_get_code(0, 0)
+		_get_code()
 		return '\n'.join(lines)
 
 
