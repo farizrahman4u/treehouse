@@ -39,7 +39,7 @@ model.fit(X, Y)
 
 model.predict(X)  # >>> [0, 1, 1, 0]
 
-# Get human readable pseudo-code
+# Generate pseudo-code
 
 model.get_program()
 
