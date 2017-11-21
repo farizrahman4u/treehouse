@@ -30,4 +30,6 @@ model.fit(X, Y)
 
 assert model.evaluate(X, Y) == 1.0
 
+print('-----')
+
 print(model.get_program())
