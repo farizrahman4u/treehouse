@@ -33,7 +33,6 @@ class Model(object):
 		num_nps = len(nps)
 		while(True):
 			if current_np >= num_nps:
-				print current_np
 				visited_lp = current_np - num_nps
 				label = np.argmax(lps[visited_lp])
 				break
