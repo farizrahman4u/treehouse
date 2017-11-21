@@ -38,3 +38,21 @@ model.fit(X, Y)
 # Predict
 
 model.predict(X)  # >>> [0, 1, 1, 0]
+
+# Get human readable pseudo-code
+
+model.get_program()
+
+'''
+if _and(input):
+    if _or(input):
+        print(0)
+    else:
+        print(1)
+else:
+    if _or(input):
+        print(1)
+    else:
+        print(0)
+'''
+```
