@@ -24,12 +24,10 @@ def _or(x):
 nodes = [_and, _or]
 
 
-model = Model(nodes, depth=3)
+model = Model(nodes, depth=5)
 
-model.fit(X, Y)
-
-assert model.evaluate(X, Y) == 1.0
-
-print('-----')
+model.fit(X, Y, 20)
 
 print(model.get_program())
+
+assert model.evaluate(X, Y) == 1.0

@@ -22,7 +22,17 @@ class Model(object):
 	def build(self):
 		expd = 2 ** self.depth
 		self.nps = self._random_prob_dist((expd - 1, len(self.nodes)))
+		self.nps_lr = np.arange(self.nps.size).reshape(self.nps.shape) + 1
+		self.nps_lr = np.cast[float](self.nps_lr)
+		self.nps_lr *= self.lr
 		self.lps = self._random_prob_dist((expd, self.num_classes))
+		self.lps_lr = np.arange(self.lps.size).reshape(self.lps.shape) + 1 + self.nps.size
+		self.lps_lr = np.cast[float](self.lps_lr)
+		self.lps_lr *= self.lr
+		num_total = self.nps.size + self.lps.size
+		self.nps_lr /= num_total
+		self.lps_lr /= num_total
+
 
 	def forward(self, x, return_history=True):
 		visited_nps = []
@@ -48,7 +58,8 @@ class Model(object):
 		nps = self.nps
 		lps = self.lps
 		num_nodes = len(self.nodes)
-		lr = self.lr
+		nps_lr = self.nps_lr
+		lps_lr = self.lps_lr
 		for epoch in range(epochs):
 			print('Epoch ' + str(epoch) + ':')
 			pbar = ProgressBar(len(X))
@@ -58,18 +69,20 @@ class Model(object):
 				if y == y_:
 					for np_idx in nps_:
 						np_ = nps[np_idx]
+						np_lr = nps_lr[np_idx]
 						mx = np.argmax(np_)
 						update = np_.copy()
-						update *= lr
+						update *= np_lr
 						update[mx] = 0
 						s = update.sum()
 						update *= -1
 						update[mx] = s
 						np_ += update
 					lp_ = lps[lp]
+					lp_lr = lps_lr[lp]
 					mx = np.argmax(lp_)
 					update = lp_.copy()
-					update *= lr
+					update *= lp_lr
 					update[mx] = 0
 					s = update.sum()
 					update *= -1
@@ -78,17 +91,20 @@ class Model(object):
 				else:
 					for np_idx in nps_:
 						np_ = nps[np_idx]
+						np_lr = nps_lr[np_idx]
 						mx = np.argmax(np_)
 						update = np.zeros_like(np_)
 						mx_val = np_[mx]
-						delta = mx_val * lr
+						delta = mx_val * np_lr[mx]
 						update += delta / (num_nodes - 1)
 						update[mx] = - delta
 						np_ += update
 					lp_ = lps[lp]
+					lp_lr = lps_lr[lp]
 					mx = np.argmax(lp_)
 					update = np.zeros_like(lp_)
 					mx_val = lp_[mx]
+					delta = mx_val * lp_lr[mx]
 					update += delta / (num_nodes - 1)
 					update[mx] = - delta
 					lp_ += update
@@ -139,14 +155,25 @@ class Model(object):
 						values[node] = True
 						left = 2 * n_p + 1
 						right = left + 1
+						if_statement_idx = len(lines) - 1
 						_get_code(right, ind, values)
 						values[node] = False
 						ind -= 4
 						lines.append(' ' * ind + 'else:')
+						else_statement_idx = len(lines) - 1
 						ind += 4
 						_get_code(left, ind, values)
 						values[node] = None
 						ind -= 4
+						# check for if(cond){x}else{x}; kinda hackish, will fix later
+						if_block = lines[if_statement_idx + 1: else_statement_idx]
+						else_block = lines[else_statement_idx + 1:]
+
+						if if_block == else_block:
+							for _ in range(len(lines) - if_statement_idx):
+								lines.pop()
+							for s in if_block:
+								lines.append(s[4:])
 					elif node_val:
 						right = 2 * n_p + 2
 						_get_code(right, ind, values)
