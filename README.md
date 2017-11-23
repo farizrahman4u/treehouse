@@ -46,13 +46,13 @@ model.get_program()
 '''
 if _and(input):
     if _or(input):
-        print(0)
+        output = 0
     else:
-        print(1)
+        output = 1
 else:
     if _or(input):
-        print(1)
+        output = 1
     else:
-        print(0)
+        output = 0
 '''
 ```

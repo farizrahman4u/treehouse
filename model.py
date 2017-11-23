@@ -160,7 +160,7 @@ class Model(object):
 			if n_p >= num_nodes:
 				n_p -= num_nodes
 				label = np.argmax(lps[n_p])
-				line = ' ' * ind + 'print(' + str(label) + ')'
+				line = ' ' * ind + 'output = ' + str(label)
 				lines.append(line)
 			else:
 					node = nodes[np.argmax(nps[n_p])]
