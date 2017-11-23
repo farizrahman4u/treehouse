@@ -186,5 +186,6 @@ class Model(object):
 		return '\n'.join(lines)
 
 
-
-
+	# allows the model to be used a node in a bigger model
+	def __call__(self, x):
+		return self.predict([x])[0]
