@@ -38,4 +38,4 @@ assert model.evaluate(X, Y) == 1.0
 
 for x, y in zip(X, Y):
     x = tuple(x)
-    assert interpreter.get_output(code, x, nodes) == y
+    assert interpreter.get_output(code, x, nodes) == y, interpreter.get_output(code, x, nodes) 
