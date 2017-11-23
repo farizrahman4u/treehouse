@@ -14,11 +14,11 @@ Y = np.array(Y)
 
 
 def _and(x):
-	return int(x[0] and x[1])
+    return int(x[0] and x[1])
 
 
 def _or(x):
-	return int(x[0] or x[1])
+    return int(x[0] or x[1])
 
 
 nodes = [_and, _or]
