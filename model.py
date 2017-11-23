@@ -32,6 +32,17 @@ class Model(object):
 		num_total = self.nps.size + self.lps.size
 		self.nps_lr /= num_total
 		self.lps_lr /= num_total
+		paths = {}
+		def _add_path(n=0, p=[]):
+			if n > expd - 2:
+				return
+			self.paths[n] = p
+			p += [n]
+			l = 2 * n + 1
+			r = l + 1
+			_add_path(l, p)
+		self.paths = [paths[i] for i in range(len(paths))]
+
 
 
 	def forward(self, x, return_history=True):
@@ -89,6 +100,13 @@ class Model(object):
 					update[mx] = s
 					lp_ += update
 				else:
+					'''
+					__NEXUS_ONLY = True
+					if __NEXUS_ONLY:
+						labels = lps.argmax(-1)
+						for lp_idx, label in enumerate(labels):
+							if label == y:
+					'''
 					for np_idx in nps_:
 						np_ = nps[np_idx]
 						np_lr = nps_lr[np_idx]
@@ -186,6 +204,6 @@ class Model(object):
 		return '\n'.join(lines)
 
 
-	# allows the model to be used a node in a bigger model
+	# allows the model to be used as a node in a bigger model
 	def __call__(self, x):
 		return self.predict([x])[0]
