@@ -1,5 +1,6 @@
 from model import Model
 import numpy as np
+import interpreter
 
 
 # Learn to do XOR using AND and OR gates
@@ -28,6 +29,13 @@ model = Model(nodes, depth=5)
 
 model.fit(X, Y, 20)
 
-print(model.get_program())
+code = model.get_program()
+print(code)
 
 assert model.evaluate(X, Y) == 1.0
+
+# Test generated code
+
+for x, y in zip(X, Y):
+    x = tuple(x)
+    assert interpreter.get_output(code, x, nodes) == y

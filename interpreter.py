@@ -12,7 +12,6 @@ def _str(x):
 
 
 def get_output(code, input=None, context=[]):
-    exec('input=' + _str(input))
     if type(context) is list:
         context = {x.__name__ : x for x in context}
     for k in context:

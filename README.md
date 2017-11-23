@@ -39,9 +39,10 @@ model.fit(X, Y)
 
 model.predict(X)  # >>> [0, 1, 1, 0]
 
-# Generate pseudo-code
+# Generate python-like code:
 
-model.get_program()
+code = model.get_program()
+print(code)
 
 '''
 if _and(input):
@@ -55,4 +56,20 @@ else:
     else:
         output = 0
 '''
+
+
+# Run the generated code on inputs using the built-in interpreter:
+
+input = (0, 0)
+interpreter.get_output(code, input, context=nodes)   # >>> 0
+
+input = (0, 1)
+interpreter.get_output(code, input, context=nodes)   # >>> 1
+
+input = (1, 0)
+interpreter.get_output(code, input, context=nodes)   # >>> 1
+
+input = (0, 0)
+interpreter.get_output(code, input, context=nodes)   # >>> 0
+
 ```
